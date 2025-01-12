@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".fragments.FragmentLogin" >
+
+    <!-- Greeting TextView -->
+    <TextView
+        android:id="@+id/greetingTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hello"
+        android:textSize="18sp"
+        android:layout_marginTop="16dp"
+        android:layout_gravity="center"/>
+
+    <!-- RecyclerView for shopping items -->
+
+    <!-- Cart Button -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/shoppingRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="606dp"
+        android:layout_marginTop="16dp" />
+
+    <Button
+        android:id="@+id/cartButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Go to Cart"
+        android:backgroundTint="@color/design_default_color_secondary_variant"
+        android:layout_marginTop="16dp"
+        android:layout_gravity="center" />
+
+</LinearLayout>

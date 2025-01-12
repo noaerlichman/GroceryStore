@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "35728958822",
+    "project_id": "noaloginapp",
+    "storage_bucket": "noaloginapp.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:35728958822:android:2b1d62ce32d7509b3654a7",
+        "android_client_info": {
+          "package_name": "com.example.loginapplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD-cw4GsWidKja9nPMkdgbI7CkF3eudB18"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
