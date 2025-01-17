@@ -112,6 +112,7 @@ public class FragmentRegister extends Fragment {
                 if (valid)
                 {
                     MainActivity mainActivity = (MainActivity) getActivity();
+                    assert mainActivity != null;
                     mainActivity.register();
                     Navigation.findNavController(view).navigate(R.id.mainFragment);
                 }

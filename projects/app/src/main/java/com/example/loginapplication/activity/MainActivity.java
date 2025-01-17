@@ -1,6 +1,8 @@
 package com.example.loginapplication.activity;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.util.Patterns;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -103,6 +105,9 @@ public class MainActivity extends AppCompatActivity {
     public void register() {
         String email = ((EditText) findViewById(R.id.textFragRegEmailAddress)).getText().toString();
         String password = ((EditText) findViewById(R.id.textFragRegPassword)).getText().toString();
+        String firstNameInput = ((EditText)findViewById(R.id.textFragRegFirstName)).getText().toString();
+        String lastNameInput = ((EditText)findViewById(R.id.textFragRegLastName)).getText().toString();
+        String phoneInput = ((EditText)findViewById(R.id.textFragRegPhone)).getText().toString();
 
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -110,10 +115,11 @@ public class MainActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Registration successful, show success message
+                            addData(firstNameInput, lastNameInput, phoneInput, email);
                             Toast.makeText(MainActivity.this, "Registration successful", Toast.LENGTH_LONG).show();
 
                             // Now, call addData() to store additional user information
-                            addData(); // Add user details (first name, last name, etc.) to the Firebase Realtime Database
+                             // Add user details (first name, last name, etc.) to the Firebase Realtime Database
                         } else {
                             // If registration fails, show error message
                             Toast.makeText(MainActivity.this, "Registration failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
@@ -123,47 +129,61 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void addData() {
-        // Get the input values
-        String firstName = ((EditText) findViewById(R.id.textFragRegFirstName)).getText().toString();
-        String lastName = ((EditText) findViewById(R.id.textFragRegLastName)).getText().toString();
-        String phone = ((EditText) findViewById(R.id.textFragRegPhone)).getText().toString();
-        String email = ((EditText) findViewById(R.id.textFragRegEmailAddress)).getText().toString();
+    public void addData(String firstname, String lastname, String phone, String email) {
 
-        // Check if any field is empty
-        if (firstName.isEmpty() || lastName.isEmpty() || phone.isEmpty() || email.isEmpty()) {
-            Toast.makeText(MainActivity.this, "Please fill all the fields", Toast.LENGTH_SHORT).show();
-            return; // Exit the method if any field is empty
+        if (firstname == null || lastname == null || phone == null || email == null) {
+            Toast.makeText(MainActivity.this, "Error: Missing UI elements", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Check if any field is empty and show specific feedback
+        if (firstname.isEmpty()) {
+            return;
+        }
+        if (lastname.isEmpty()) {
+            return;
+        }
+        if (phone.isEmpty() || !phone.matches("[0-9]+")) { // Simple phone validation
+            return;
+        }
+        if (email.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            return;
         }
 
         // Get the current Firebase user
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
         if (currentUser != null) {
-            // Get the UID of the current user
-            String userId = currentUser.getUid();
+            // Get the user's email and sanitize it
+            String emailKey = currentUser.getEmail();
+            if (emailKey != null) {
+                emailKey = emailKey.replace(".", ","); // Replace dots with commas
+            } else {
+                Toast.makeText(MainActivity.this, "Email is null for the current user", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
             // Get a reference to the Firebase Realtime Database
             FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference myRef = database.getReference("users").child(userId); // Use UID as the key
+            DatabaseReference myRef = database.getReference("users").child(emailKey); // Use sanitized email as the key
 
             // Create the user object
-            User user = new User(firstName, lastName, phone, email);
+            User user = new User(firstname, lastname, phone, email);
 
             // Set the value in the Firebase Database
             myRef.setValue(user)
                     .addOnSuccessListener(aVoid -> {
-                        // On success
                         Toast.makeText(MainActivity.this, "User data added successfully", Toast.LENGTH_SHORT).show();
                     })
                     .addOnFailureListener(e -> {
-                        // On failure
                         Toast.makeText(MainActivity.this, "Failed to add data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     });
         } else {
             Toast.makeText(MainActivity.this, "No authenticated user found", Toast.LENGTH_SHORT).show();
         }
+
     }
+
 
 
 }
